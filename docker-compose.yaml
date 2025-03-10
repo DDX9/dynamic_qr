@@ -1,0 +1,6 @@
+services:
+  backend:
+    build: ./
+    dockerfile: Dockerfile
+  redis:
+    image: redis:latest

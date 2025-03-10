@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "start": "bun --watch run index.ts"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.4"
+  },
+  "name": "dynamic_qr",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
