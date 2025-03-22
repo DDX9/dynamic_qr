@@ -1,8 +1,11 @@
-import express, { Request, Response } from "express";
-import redirectController from "./dynamic_qr/reroute";
+import express, { type Request, type Response } from "express";
+import redirectController from "./services/reroute";
+import { redisClient,limiter } from "./services/redisRateLimit";
 
 const app = express();
 const port = 8080;
+
+app.use(limiter)
 
 app.get("/", (req:Request, res:Response) => {
   res.send("Hello World!");
@@ -10,7 +13,7 @@ app.get("/", (req:Request, res:Response) => {
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}...`);
-});
+})
 
 /*
     redirect
@@ -18,7 +21,7 @@ app.listen(port, () => {
 
 */
 app.get("/:codes", redirectController.redirectQR)
-
+app.get("/test",redirectController.redirectQRTest)
 /*
 
     admin router
