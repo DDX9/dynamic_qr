@@ -9,7 +9,7 @@ import { fileService } from "./services/file";
 const app = express();
 const port = 8080;
 // load qr to redis
-// app.use(limiter)
+app.use(limiter)
 Promise.all([fileService.loadAllCsvToRedis(redisInstance)]).then(()=>{
 
   console.log('csv parsing completed!')
