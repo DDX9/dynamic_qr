@@ -1,0 +1,63 @@
+import type { RedisClientType } from "redis"
+import { parse } from "csv-parse";
+import fs from "fs"
+import path from "path"
+import { finished } from "stream";
+
+export const filePath = 'data_store/data.csv'
+
+export const fileService = {
+    parseCsvFile:async(relativePath:string):Promise<string[][]>=>{
+        // const fullPath = path.resolve(relativePath)
+        // const fileStream = fs.createReadStream(fullPath);
+        // const parser = parse()
+        // const arr:(string | number | boolean | null)[][]=[]
+        // parser.on('data', (record) => {
+        //     arr.push(record);
+        // });
+        
+        //   // Catch any error
+        //   parser.on("error", function (err) {
+        //     console.error(err.message);
+        //     throw err
+        //   });
+        // fileStream.pipe(parser);
+        // await finished(parser)
+        // console.log('arr',arr)
+        // return arr
+        const file = Bun.file(path.resolve(relativePath));
+        const text = await file.text();
+        return new Promise((resolve, reject) => {
+          parse(text, (err, records) => {
+            if (err) reject(err);
+            else resolve(records as string[][]);
+          });
+        });
+    },
+    loadAllCsvToRedis:async(redisInstance:RedisClientType)=>{
+        fs.stat(filePath,(exists)=>{
+            console.log('data store exist',exists === null)
+        })
+        const csvContent = await fileService.parseCsvFile(filePath)
+        console.log('csv content',csvContent,filePath)
+        for await (const eachRow of csvContent) {
+            let hasQr = false
+            let hasDestination = false
+
+       await Promise.all( eachRow.map((col,index)=>{
+
+        if(index === 0 && col !== null)
+            hasQr= true
+        if(index ===1 && col !== null )
+            hasDestination = true
+
+        if(hasQr && hasDestination  && typeof(eachRow[0]) === 'string' && typeof(eachRow[1]) === 'string' ){
+          return redisInstance.hSet(eachRow[0],"dest",eachRow[1])
+        }
+       }))
+
+        }
+        console.log('loaded csv')
+    },
+
+}
