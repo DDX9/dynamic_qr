@@ -33,6 +33,15 @@ export const fileService = {
           });
         });
     },
+    readLatestBackupCsv:async(relativePath:string): Promise<string[][] |undefined>=>{
+        const allFiles = fs.readdirSync(path.resolve(relativePath))
+        const allCsv = allFiles.filter((filePath:string)=>{return filePath.indexOf('.csv') !== -1}).sort((a,b)=>{return parseInt(a)-parseInt(b)})
+        console.log(allCsv)
+        if(allCsv.length >0){
+            return await fileService.parseCsvFile(allCsv[0])
+        } else return undefined
+
+    },
     loadAllCsvToRedis:async(redisInstance:RedisClientType)=>{
         fs.stat(filePath,(exists)=>{
             console.log('data store exist',exists === null)

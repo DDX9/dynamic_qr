@@ -6,8 +6,9 @@ import {redisInstance} from "./redis.ts"
 const redirectService = {
     redirectQR: async (req:Request,res:Response)=>{
         let des :string |undefined
+        let code:string | undefined
         try {
-            const code = redirectService.redirectCodesParamValidation(req,res)
+            code = redirectService.redirectCodesParamValidation(req,res)
             des = await redirectService.readDestinationFromKey(code,redisInstance)
         } catch(e){
             console.error(e)
@@ -17,7 +18,7 @@ const redirectService = {
         if(des !== undefined)
             res.redirect(des)
         else
-            res.status(404).send('Invalid QR Code')
+            res.status(404).send(`Invalid QR Code for qr: ${code}`)
     },
     redirectQRTest: (req:Request,res:Response)=>{
         res.redirect("https://www.google.com")
