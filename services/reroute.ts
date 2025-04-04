@@ -26,7 +26,7 @@ const redirectService = {
         const field = "dest"
         let dest:string | null | undefined=null
         if(key !== undefined) {
-          dest =  await redisInstance.hGet(key,field) 
+          dest =  await redisInstance.hGet(field,key) 
         }
 
         if(dest === null)
@@ -41,6 +41,16 @@ const redirectService = {
             throw new Error("Invalid url")
         else
             return codes
+    },
+    updateRedirectDestination:async(key:string,destination:string, redisInstance:RedisClientType)=>{
+        const field = "dest"
+        await redisInstance.hSet(field,key,destination)
+    },
+    getQrAndDestination:async(redisInstance:RedisClientType)=>{
+        // since redis only store simple key and values, use hgetall
+        const data = await redisInstance.hGetAll('dest')
+        // data.map((f:string)=>console.log)
+        return data
     }
 }
 

@@ -2,7 +2,6 @@ import type { RedisClientType } from "redis"
 import { parse } from "csv-parse";
 import fs from "fs"
 import path from "path"
-import { finished } from "stream";
 
 export const filePath = 'data_store/data.csv'
 
@@ -52,7 +51,7 @@ export const fileService = {
             hasDestination = true
 
         if(hasQr && hasDestination  && typeof(eachRow[0]) === 'string' && typeof(eachRow[1]) === 'string' ){
-          return redisInstance.hSet(eachRow[0],"dest",eachRow[1])
+          return redisInstance.hSet("dest",eachRow[0],eachRow[1])
         }
        }))
 

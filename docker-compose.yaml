@@ -4,9 +4,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
-      - "80:80"
-      - "443:443"
+      - "8888:8080"
     volumes: 
       - .:/usr/src/app
     environment:
